@@ -1,6 +1,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.StackPane?>
-<StackPane xmlns:fx="http://javafx.com/fxml" fx:id="stackPane"
-           fx:controller="dialog.DialogController" alignment="center">
-    <Label fx:id="dialogOpen" text="OpenDialog"></Label>
-</StackPane>
+<BorderPane> xmlns:fx="http://javafx.com/fxml" fx:controller="dialog.DialogController" prefHeight="200" prefWidth="320">
+         <top>
+                               <Label fx:id="dialogOpen" text="OpenDialog"></Label>
+           </top>
+           <center
+               <StackPane fx:id="stackPane" VBox.vgrow="ALWAYS"/>
+          </center>
+</BorderPane>
