@@ -10,6 +10,7 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -22,26 +23,46 @@ public class DialogController extends BorderPane implements Initializable {
     private StackPane stackPane;
 
     private Viewer viewer;
-
+    private ViewPanel defaultView;
+    private Graph graph;
 
     public void initialize(URL location, ResourceBundle resources) {
-        Graph graph = new DefaultGraph("TestGraph");
+        graph = new DefaultGraph("TestGraph");
         graph.addNode("A");
         graph.addNode("B");
         graph.addNode("C");
         graph.addEdge("AB", "A", "B");
         graph.addEdge("AC", "A", "C");
         graph.addEdge("BC", "B", "C");
-        viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
-        ViewPanel defaultView = viewer.addDefaultView(false);
-        viewer.enableAutoLayout();
-        SwingNode swingNode = new SwingNode();
-        swingNode.setContent(defaultView);
-        stackPane.getChildren().add(swingNode);
-        System.out.println("graph build");
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+                defaultView = viewer.addDefaultView(false);
+                viewer.enableAutoLayout();
+
+                javafx.application.Platform.runLater(new Runnable() {
+                    @Override public void run() {
+                        SwingNode swingNode = new SwingNode();
+                        swingNode.setContent(defaultView);
+                        stackPane.getChildren().add(swingNode);
+                        stackPane.requestLayout();
+                        System.out.println("JFX");
+                    }
+                });
+                System.out.println("SWING");
+            }
+        });
     }
 
     public void closeViewer() {
-        viewer.close();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                viewer.close();
+                System.out.println("close");
+            }
+        });
     }
 }
