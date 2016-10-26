@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 /**
  * Created by dev on 25.10.16.
  */
-public class DialogController implements Initializable {
+public class DialogController extends BorderPane implements Initializable {
 
     @FXML
     private StackPane stackPane;
